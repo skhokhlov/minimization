@@ -1,4 +1,4 @@
-# DEPRICATED
+# DEPRECATED
 See dmkz/minimization instead.
 
 # Глобальная минимизация многомерной функции
