@@ -1,18 +1,4 @@
-.idea
-.DS_Store
-
-# Temp input/output files
-output.txt
-input.txt
-
-# Ignored CMakeFiles
-CMakeFiles/*
-tests/CMakeFiles/*
-build/tests/CMakeFiles/*
-build/CMakeFiles/*
-*.cmake
-CMakeCache.txt
-Makefile
+# Sergey Khokhlov
 
 # Prerequisites
 *.d
@@ -47,10 +33,11 @@ Makefile
 *.out
 *.app
 
-bin/out_min\.txt
 
-bin/out\.txt
-
-bin/CMakeFiles/
-
+.idea
+.DS_Store
 \.vscode/launch\.json
+
+bin/out_min\.txt
+bin/out\.txt
+bin/CMakeFiles/

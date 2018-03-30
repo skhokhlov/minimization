@@ -1,31 +1,39 @@
 #include "nesterov.hpp"
 
-// Метод Нестерова (возвращается результат - точка минимума и количество сделанных итераций)
-std::pair<Vector, int> nesterov(Function f, Vector startingPoint, int iter_limit) {
-    ld ro = 2.0;
-	ld teta = 1.1;
-	ld alfa = 1.0;
+// Метод Нестерова
+// Авторы: Петрухина Светлана, Кулага Иван
+IterationData nesterov(Function f, Vector startingPoint, const StopCondition& stop_condition) {
+// f - указатель на целевую функцию
+// startingPoint - начальное приближение
+// stop_condition - критерий остановы
+// Результат работы метода будет лежать в структуре данных о последней итерации
+
+    Real ro = 2.0;
+	Real teta = 1.1;
+	Real alfa = 1.0;
 
 	Vector v = startingPoint;
 	Vector x = startingPoint;
 	Vector xNext = startingPoint;
 	Vector y = startingPoint;
-	ld alfaNext = 0.0;
-	ld A = 0;
-
-    Vector xPrev = startingPoint; //Переменная для хранения x(i-1)
-	ld fPrev = 0; //Переменная для хранения f(x(i-1))
-	ld fCurrent = 0; //Перменная для хранения f(x(i))
-	Vector xCurrent = startingPoint;  //Переменная для хранения x(i)
+	Real alfaNext = 0.0;
+	Real A = 0;
     
-    int iterations = 0; //Переменная для хранения номера итерации
-	while (iterations < iter_limit) {
-		while (true) {
+    // Инициализируем начальной точкой структуру данных итерации:
+    IterationData iter_data;
+    iter_data.x_curr = x;
+    iter_data.f_curr = f(x);
+    iter_data.iter_counter = 0;
+    iter_data.method_title = "Nesterov";
+    
+	do {
+		//for (int iter=0; iter < 100; ++iter) {
+        while (true) {
 			alfaNext = alfa + std::sqrt(alfa*alfa + 2 * alfa*A);
 			y = (A / (A + alfaNext)) * x + (alfaNext / (A + alfaNext)) * v;
 			xNext = y - alfa * grad(f, y);
-			ld temp1 = f(xNext);
-			ld temp2 = (f(y) + dot(grad(f, y), xNext - y) + 1 / (2 * alfa) *  std::pow(norm(xNext - y), 2));
+			Real temp1 = f(xNext);
+			Real temp2 = (f(y) + dot(grad(f, y), xNext - y) + 1 / (2 * alfa) *  std::pow(norm(xNext - y), 2));
 			if (temp1 - temp2 <= COMPARE_EPS)
 				break;
 			alfa = alfa / ro;
@@ -33,13 +41,8 @@ std::pair<Vector, int> nesterov(Function f, Vector startingPoint, int iter_limit
 		v = v - alfaNext * (grad(f, xNext));
 		A += alfaNext;
 		alfaNext = teta * alfa;
-        ++iterations;
-        
-        //Запись значений x(i). x(i-1), f(x(i)), f(x(i-1))
-		xPrev = xCurrent;
-		fPrev = fCurrent;
-		xCurrent = xNext;
-		fCurrent = f(xCurrent);
-	}
-	return {xNext, iterations};
+
+        iter_data.next(xNext, f(xNext));
+	} while (!stop_condition(iter_data));
+    return iter_data;
 }
