@@ -11,7 +11,7 @@
 #include <ctime>
 #include <cstdlib>
 
-// Get current date/time, format is YYYY-MM-DD.HH:mm:ss
+// Получить текущую дату/время, формат:ГГГГ-MM-ДД.ЧЧ:мм:сс
 const std::string CurrentDateTime() {
     time_t     now = std::time(0);
     struct tm  tstruct;
